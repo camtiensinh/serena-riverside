@@ -1,0 +1,12 @@
+.vercel
+.agents/
+.env*
+!.env.example
+node_modules/
+.next/
+*.tsbuildinfo
+ADMIN-ACCESS.local.txt
+artifacts/
+*.log
+/den.png
+/digital gold light (1).png

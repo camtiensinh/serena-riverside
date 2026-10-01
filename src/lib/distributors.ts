@@ -1,0 +1,8 @@
+export const DISTRIBUTORS = [
+  "HỆ THỐNG PHÂN PHỐI MAPLELAND",
+  "HỆ THỐNG PHÂN PHỐI DAT XANH SERVICES",
+  "HỆ THỐNG PHÂN PHỐI ĐẠI TRƯỜNG SƠN",
+  "HỆ THỐNG PHÂN PHỐI PICOLAND",
+  "HỆ THỐNG PHÂN PHỐI HUNTERLAND",
+  "HỆ THỐNG PHÂN PHỐI VẠN XUÂN SERVICE",
+] as const;

@@ -1,0 +1,128 @@
+.public-page {
+  --green: #079bd0;
+  --deep: #08486b;
+  --ink: #173c51;
+  --muted: #6d8794;
+  background:
+    radial-gradient(ellipse at 15% 65%, #d8f2fb, transparent 60%), #f5fafb;
+}
+.public-page .public-nav {
+  max-width: 1320px;
+  height: 96px;
+  padding: 0 40px;
+}
+.public-page .brand-icon {
+  background: #e6f5fc;
+  border-color: #cae6f3;
+  color: #0786bb;
+}
+.public-page .entry-layout {
+  max-width: 1240px;
+  grid-template-columns: 1.04fr 1fr;
+  gap: 56px;
+  margin: 24px auto 48px;
+  align-items: stretch;
+}
+.kickoff-visual {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  min-height: 0;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 18px 55px #19789b18;
+  background: #9de3fb;
+}
+.kickoff-visual > img {
+  object-fit: cover;
+  object-position: center;
+}
+.public-page .entry-card {
+  align-self: center;
+  padding: 34px;
+  border: 1px solid #dfebf0;
+  box-shadow: 0 16px 50px #164f6b08;
+}
+.public-page .entry-card h2 {
+  font-size: 28px;
+}
+.public-page .event-time {
+  background: #eff8fc;
+  border-color: #dfedf4;
+}
+.public-page .form-row {
+  grid-template-columns: 1fr;
+  display: block;
+}
+.public-page input,
+.public-page select {
+  border-color: #dbe6ed;
+  min-height: 45px;
+}
+.public-page select {
+  font-size: 11px;
+  padding-right: 26px;
+}
+.public-page input:focus,
+.public-page select:focus {
+  border-color: #128ac4;
+  box-shadow: 0 0 0 3px #128ac418;
+}
+.public-page .primary {
+  background: #087fbc;
+  border-color: #087fbc;
+  min-height: 46px;
+}
+.public-page .primary:hover {
+  background: #076797;
+}
+.public-page .checkbox-label input {
+  min-height: 0;
+  accent-color: #087fbc;
+}
+.public-page footer {
+  border-color: #e1edf2;
+}
+@media (max-width: 1000px) {
+  .public-page .entry-layout {
+    gap: 28px;
+    padding: 0 24px;
+  }
+  .public-page .entry-card {
+    padding: 26px;
+  }
+}
+@media (max-width: 760px) {
+  .public-page .public-nav {
+    height: 78px;
+    padding: 0 20px;
+  }
+  .public-page .brand {
+    font-size: 18px;
+  }
+  .public-page .brand-icon {
+    padding: 6px;
+  }
+  .public-page .text-link {
+    font-size: 10px;
+  }
+  .public-page .entry-layout {
+    grid-template-columns: 1fr;
+    margin: 10px auto 30px;
+    padding: 0 16px;
+    gap: 20px;
+  }
+  .kickoff-visual {
+    min-height: 0;
+  }
+  .kickoff-visual > img {
+    object-position: center;
+  }
+  .public-page .entry-card {
+    padding: 25px 22px;
+  }
+  .public-page footer {
+    padding: 20px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+}

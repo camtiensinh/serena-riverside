@@ -1,0 +1,14 @@
+import {readFile,writeFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {db} from '../src/lib/db';
+import {facebookUrl} from '../src/lib/rules';
+assert.ok(!process.env.DATABASE_SCHEMA,'Import into configured production database only');
+const codes=(await readFile('artifacts/import-duyluan-50.txt','utf8')).trim().split(/\r?\n/);
+assert.equal(codes.length,50);assert.equal(new Set(codes).size,50);
+const urls=codes.map(code=>facebookUrl(/^\d+$/.test(code)?`https://www.facebook.com/reel/${code}/`:`https://www.facebook.com/duyluandethuong/posts/${code}`));
+const sql=db();
+const rows=await sql.transaction(urls.map((url,i)=>sql`INSERT INTO submissions(name,phone,team,facebook_url,status) VALUES(${'TEST 50 DUY LUÂN - '+String(i+1).padStart(2,'0')},'','TEST 50 DUY LUÂN',${url},'pending') ON CONFLICT (facebook_url) WHERE deleted_at IS NULL DO NOTHING RETURNING id,facebook_url`));
+const verified=await sql`SELECT id,name,team,facebook_url,status FROM submissions WHERE facebook_url=ANY(${urls}::text[]) AND deleted_at IS NULL`;
+assert.equal(verified.length,50);
+await writeFile('artifacts/import-duyluan-result.json',JSON.stringify(verified,null,2));
+console.log(JSON.stringify({input:codes.length,unique:urls.length,posts:48,reels:2,inserted:rows.flat().length,alreadyExisted:50-rows.flat().length,verified:verified.length,statuses:verified.reduce((a,r)=>({...a,[r.status]:(a[r.status]||0)+1}),{} as Record<string,number>)}));

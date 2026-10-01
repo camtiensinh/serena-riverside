@@ -1,0 +1,33 @@
+{
+  "name": "serena-kickoff-arena",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "tsx --test tests/*.test.ts",
+    "db:migrate": "node --env-file=.env.local scripts/migrate.mjs"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "latest",
+    "lucide-react": "latest",
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "read-excel-file": "^9.3.10",
+    "recharts": "latest",
+    "zod": "latest"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "prettier": "^3.9.6",
+    "tsx": "latest",
+    "typescript": "latest",
+    "write-excel-file": "^4.1.1"
+  },
+  "type": "module"
+}

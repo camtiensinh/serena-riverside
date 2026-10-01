@@ -1,0 +1,32 @@
+import { chromium } from '@playwright/test';
+import assert from 'node:assert/strict';
+import { db } from '../src/lib/db';
+import { DISTRIBUTORS } from '../src/lib/distributors';
+assert.match(process.env.DATABASE_SCHEMA || '', /^arena_qa_\d+$/);
+const browser = await chromium.launch({executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe',headless:true});
+try {
+ const page=await browser.newPage({viewport:{width:1440,height:1000}});
+ const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('http://localhost:3001');
+ await page.getByRole('button',{name:'Gửi bài tham dự'}).waitFor();
+ assert.equal(await page.locator('[name=phone]').count(),0);
+ assert.deepEqual(await page.locator('select[name=team] option:not([disabled])').allTextContents(),[...DISTRIBUTORS]);
+ await page.locator('.kickoff-visual img').evaluate((el:HTMLImageElement)=>el.decode());
+ await page.screenshot({path:'artifacts/entry-desktop.png',fullPage:true});
+ await page.setViewportSize({width:390,height:844});
+ assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth <= innerWidth));
+ await page.screenshot({path:'artifacts/entry-mobile.png',fullPage:true});
+ await page.locator('[name=name]').fill('QA Form Serena');
+ await page.locator('[name=team]').selectOption(DISTRIBUTORS[0]);
+ await page.locator('[name=facebookUrl]').fill('https://www.facebook.com/qa/posts/9876543210');
+ await page.locator('[name=consent]').check();
+ const response=page.waitForResponse(r=>r.url().endsWith('/api/submit'));
+ await page.getByRole('button',{name:'Gửi bài tham dự'}).click();
+ assert.equal((await response).status(),201);
+ await page.getByText('Đã nhận bài của bạn!').waitFor();
+ const sql=db();const [row]=await sql`SELECT phone,team FROM submissions WHERE name='QA Form Serena'`;
+ assert.equal(row.phone,'');assert.equal(row.team,DISTRIBUTORS[0]);
+ const invalid=await page.request.post('http://localhost:3001/api/submit',{headers:{origin:'http://localhost:3001'},data:{name:'QA Invalid',team:'Invalid',consent:true,facebookUrl:'https://www.facebook.com/qa/posts/9876543211'}});
+ assert.equal(invalid.status(),400);assert.deepEqual(errors,[]);
+ console.log('PASS: desktop/mobile, 7 distributors, no phone, real QA DB submission, invalid distributor rejected, zero browser errors.');
+} finally {await browser.close();}

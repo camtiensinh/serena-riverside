@@ -1,0 +1,15 @@
+CREATE TABLE IF NOT EXISTS settings (id int PRIMARY KEY DEFAULT 1 CHECK(id=1), starts_at timestamptz NOT NULL DEFAULT '2026-09-11T08:00:00+07:00', ends_at timestamptz, hashtags text[] NOT NULL DEFAULT ARRAY['FutureSerena','NhaMauSerena'], metric text NOT NULL DEFAULT 'reactions' CHECK(metric IN ('likes','reactions')), auto_scan boolean NOT NULL DEFAULT false, interval_minutes int NOT NULL DEFAULT 5, published jsonb, published_at timestamptz, last_scan_at timestamptz);
+INSERT INTO settings(id) VALUES(1) ON CONFLICT DO NOTHING;
+-- statement
+CREATE TABLE IF NOT EXISTS submissions (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), name text NOT NULL, phone text NOT NULL, team text NOT NULL, facebook_url text UNIQUE NOT NULL, post_id text, post_url text, author text, avatar text, content text, posted_at timestamptz, likes int, reactions int, comments int, shares int, hashtag_ok boolean, time_ok boolean, status text NOT NULL DEFAULT 'pending', reason text, raw jsonb, checked_at timestamptz, created_at timestamptz NOT NULL DEFAULT now());
+-- statement
+CREATE TABLE IF NOT EXISTS api_keys (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), label text NOT NULL, secret text NOT NULL, fingerprint text UNIQUE NOT NULL, suffix text NOT NULL, enabled boolean NOT NULL DEFAULT true, health text NOT NULL DEFAULT 'unknown', cooldown_until timestamptz, last_used_at timestamptz, created_at timestamptz NOT NULL DEFAULT now());
+-- statement
+CREATE TABLE IF NOT EXISTS scans (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), status text NOT NULL DEFAULT 'running', created_at timestamptz NOT NULL DEFAULT now(), completed_at timestamptz);
+CREATE UNIQUE INDEX IF NOT EXISTS one_active_scan ON scans((status)) WHERE status='running';
+CREATE TABLE IF NOT EXISTS jobs (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), scan_id uuid NOT NULL REFERENCES scans(id), submission_id uuid NOT NULL REFERENCES submissions(id), key_id uuid REFERENCES api_keys(id), state text NOT NULL DEFAULT 'queued', run_id text, dataset_id text, attempts int NOT NULL DEFAULT 0, tried_keys uuid[] NOT NULL DEFAULT '{}', reason text, updated_at timestamptz NOT NULL DEFAULT now(), UNIQUE(scan_id,submission_id));
+-- statement
+CREATE TABLE IF NOT EXISTS api_logs (id bigserial PRIMARY KEY, key_id uuid REFERENCES api_keys(id), job_id uuid REFERENCES jobs(id), operation text NOT NULL, http_status int, outcome text NOT NULL, message text, duration_ms int, cost_usd numeric, created_at timestamptz NOT NULL DEFAULT now());
+CREATE TABLE IF NOT EXISTS snapshots (id bigserial PRIMARY KEY, scan_id uuid NOT NULL REFERENCES scans(id), submission_id uuid NOT NULL REFERENCES submissions(id), likes int, reactions int, comments int, shares int, created_at timestamptz NOT NULL DEFAULT now(), UNIQUE(scan_id,submission_id));
+CREATE TABLE IF NOT EXISTS locks (id text PRIMARY KEY, expires_at timestamptz NOT NULL, owner uuid NOT NULL);
+CREATE TABLE IF NOT EXISTS rate_limits (id text PRIMARY KEY, count int NOT NULL DEFAULT 1, expires_at timestamptz NOT NULL);

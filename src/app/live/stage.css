@@ -1,0 +1,1288 @@
+.arena-stage {
+  --neon: #2bcaff;
+  --gold: #ffdf8d;
+  min-height: 100svh;
+  background:
+    radial-gradient(ellipse at 50% 65%, #073c87 0, transparent 49%),
+    radial-gradient(ellipse at 85% 20%, #0b2467 0, transparent 40%), #020a23;
+  color: #eaf7ff;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.arena-stage:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(
+      115deg,
+      transparent 40%,
+      #199eff06 40.1%,
+      transparent 40.3%
+    ),
+    linear-gradient(65deg, transparent 60%, #199eff0a 60.1%, transparent 60.3%),
+    repeating-linear-gradient(0deg, transparent 0 49px, #0c8bf909 50px),
+    repeating-linear-gradient(90deg, transparent 0 69px, #0c8bf909 70px);
+  pointer-events: none;
+}
+.arena-stars {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.5;
+  background-image:
+    radial-gradient(1px 1px at 15% 18%, #7ce8ff 99%, transparent),
+    radial-gradient(1px 1px at 72% 30%, #fff 99%, transparent),
+    radial-gradient(2px 2px at 80% 90%, #04acff 99%, transparent);
+  background-size:
+    140px 170px,
+    213px 197px,
+    317px 313px;
+}
+.arena-water {
+  position: absolute;
+  z-index: -1;
+  bottom: -2%;
+  width: 110%;
+  left: -5%;
+  height: 63%;
+  filter: drop-shadow(0 0 7px #068bff);
+  pointer-events: none;
+}
+.arena-header {
+  height: 84px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 3.5%;
+  border-bottom: 1px solid #2b8cff25;
+  gap: 20px;
+}
+.arena-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #9ceaff;
+  font: 700 22px "Manrope";
+  letter-spacing: 4px;
+}
+.arena-brand small {
+  display: block;
+  font-size: 7px;
+  letter-spacing: 5px;
+  text-align: center;
+  margin-top: 2px;
+}
+.arena-brand > svg {
+  filter: drop-shadow(0 0 8px #27baff);
+}
+.arena-event {
+  font-size: 9px;
+  letter-spacing: 3px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: #6b9fd5;
+}
+.arena-event > span {
+  height: 3px;
+  width: 3px;
+  border-radius: 50%;
+  background: #51beff;
+}
+.arena-tools {
+  display: flex;
+  gap: 8px;
+}
+.arena-tools button {
+  font-size: 10px;
+  background: #09214f88;
+  border-color: #216eb866;
+  color: #aee4ff;
+  padding: 9px 11px;
+}
+.arena-tools button:hover {
+  border-color: #7edfff;
+  box-shadow: 0 0 18px #149cff33;
+}
+.arena-error {
+  text-align: center;
+  padding: 9px;
+  color: #ffde9d;
+  background: #70461333;
+  font-size: 11px;
+}
+.arena-layout {
+  width: 100%;
+  max-width: 1860px;
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(220px, 0.85fr) minmax(330px, 1.2fr) minmax(
+      290px,
+      1fr
+    );
+  gap: 4%;
+  align-items: center;
+  margin: auto;
+  padding: 35px 4% 32px;
+  position: relative;
+}
+.arena-stats {
+  align-self: center;
+}
+.arena-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: 1.5px;
+  color: #93d5ff;
+  font-size: 8px;
+  margin-bottom: 24px;
+}
+.arena-status > span {
+  width: 5px;
+  height: 5px;
+  background: #2cceff;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #27c5ff;
+}
+.neon-stat {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 23px 20px;
+  border: 1px solid #268dff;
+  background: linear-gradient(110deg, #042660b8, #031337db);
+  margin: 17px 0;
+  box-shadow:
+    inset 0 0 20px #078fff14,
+    0 0 13px #0e88ff44;
+  border-radius: 2px 14px 2px 14px;
+}
+.neon-stat:before,
+.neon-stat:after {
+  content: "";
+  position: absolute;
+  width: 30%;
+  height: 2px;
+  top: -1px;
+  left: 12%;
+  background: #abf2ff;
+  box-shadow: 0 0 15px 2px #008dff;
+}
+.neon-stat:after {
+  top: auto;
+  bottom: -1px;
+  left: auto;
+  right: 12%;
+}
+.neon-stat > svg {
+  color: #bfeaff;
+  filter: drop-shadow(0 0 5px #3098ff);
+  flex-shrink: 0;
+  stroke-width: 1.3;
+}
+.neon-stat h2 {
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+  color: #bacefd;
+  margin: 0 0 10px;
+  line-height: 1.5;
+}
+.neon-stat strong {
+  font: 700 35px/1 "Manrope";
+  letter-spacing: -1px;
+  text-shadow: 0 0 12px #3d9eff;
+  white-space: nowrap;
+}
+.neon-stat strong > small {
+  font: 500 10px "Be Vietnam Pro";
+  letter-spacing: 0.5px;
+  margin-left: 8px;
+}
+.arena-top-picks {
+  margin-top: 32px;
+}
+.arena-section-label {
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: #618bc0;
+  margin-bottom: 12px;
+}
+.top-pick-buttons {
+  display: flex;
+  gap: 9px;
+}
+.top-pick-buttons button {
+  flex: 1;
+  border: 1px solid #1d529388;
+  padding: 14px 7px;
+  background: #041938cc;
+  color: #669cd1;
+  border-radius: 5px;
+  flex-direction: column;
+  font-size: 9px;
+  gap: 8px;
+}
+.top-pick-buttons button.selected {
+  color: var(--gold);
+  border-color: #e9c96a;
+  background: linear-gradient(140deg, #49402288, #112048);
+  box-shadow: 0 0 14px #ffc54920;
+}
+.top-pick-buttons button:hover {
+  color: white;
+  border-color: #8bd7ff;
+}
+.arena-event-note {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #5486bb;
+  font-size: 8px;
+  line-height: 1.9;
+  letter-spacing: 1.2px;
+  margin-top: 30px;
+}
+.arena-event-note b {
+  font-weight: 500;
+  color: #8bbbea;
+}
+.arena-ceremony {
+  margin-top: 24px;
+  color: var(--gold);
+  background: linear-gradient(90deg, #41351c66, #061830);
+  border-color: #d6b36477;
+  font-size: 10px;
+  width: 100%;
+}
+.arena-center {
+  align-self: center;
+  min-width: 0;
+  position: relative;
+  text-align: center;
+}
+.winner-heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin: 0 -20px 23px;
+}
+.winner-heading > div > span {
+  font-size: 12px;
+  letter-spacing: 5px;
+  color: #c6efff;
+  text-shadow: 0 0 7px #41b9ff;
+}
+.winner-heading h1 {
+  font-size: 32px;
+  font-weight: 800;
+  color: #edfcff;
+  margin: 6px 0 0;
+  letter-spacing: -0.8px;
+  text-shadow:
+    0 0 6px #25a5ff,
+    0 0 20px #0077ff;
+}
+.laurel {
+  font-size: 69px;
+  line-height: 0.8;
+  transform: rotate(-25deg);
+  color: #90e4ff;
+  text-shadow: 0 0 12px #159fff;
+}
+.laurel.mirrored {
+  transform: scaleX(-1) rotate(-25deg);
+}
+.post-halo {
+  position: relative;
+  max-width: 460px;
+  margin: auto;
+  animation: post-arrive 0.5s ease-out;
+}
+.post-halo:before {
+  content: "";
+  position: absolute;
+  inset: -13px -10px 44px;
+  border: 1px solid #27baff90;
+  border-radius: 19px;
+  box-shadow:
+    0 0 18px #006dff88,
+    inset 0 0 15px #10a4ff22;
+  z-index: -1;
+}
+.post-halo:after {
+  content: "";
+  position: absolute;
+  width: 120%;
+  height: 35px;
+  left: -10%;
+  bottom: 30px;
+  border-radius: 50%;
+  background: #14b6ff33;
+  box-shadow: 0 0 35px #009dffaa;
+  filter: blur(13px);
+  z-index: -2;
+}
+.post-rank-emblem {
+  position: absolute;
+  right: -19px;
+  top: -18px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 12px;
+  background: linear-gradient(140deg, #2bc1ff, #1555d0);
+  border: 2px solid #c2f5ff;
+  box-shadow: 0 0 23px #21bdff;
+  border-radius: 9px;
+  color: white;
+  font: 800 16px "Manrope";
+  transform: rotate(6deg);
+}
+.post-rank-emblem.gold {
+  background: linear-gradient(140deg, #ffe697, #cc982e);
+  color: #624512;
+  border-color: #fff4c4;
+  box-shadow: 0 0 22px #ffcd5666;
+}
+.facebook-post {
+  background: #fff;
+  border: 2px solid #bdedff;
+  box-shadow:
+    0 0 9px #44c3ff,
+    0 0 34px #0080ffbb;
+  border-radius: 12px;
+  overflow: hidden;
+  color: #243755;
+  text-align: left;
+}
+.fb-post-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 17px 10px;
+}
+.fb-post-header > div {
+  min-width: 0;
+}
+.fb-post-header h2 {
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 0;
+  margin: 0 0 2px;
+  color: #1460c6;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fb-post-header > div > span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 8px;
+  color: #8292a9;
+}
+.fb-post-header i {
+  font-style: normal;
+}
+.fb-verified {
+  margin-left: auto;
+  color: #2288f8;
+}
+.fb-post-copy {
+  font-size: 10px;
+  line-height: 1.7;
+  padding: 0 17px 12px;
+  max-height: 69px;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: #43526b;
+}
+.stage-photo {
+  height: clamp(180px, 32vh, 365px) !important;
+  margin: 0 !important;
+  border-top: 1px solid #e7eff7;
+  border-bottom: 1px solid #e7eff7;
+  background: #e7edf6;
+}
+.stage-photo img {
+  object-fit: cover;
+}
+.fb-post-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+  gap: 8px;
+  padding: 15px 12px;
+  color: #1877ee;
+}
+.fb-post-metrics > span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.fb-post-metrics strong {
+  font: 800 15px "Manrope";
+  letter-spacing: -0.5px;
+}
+.fb-post-metrics small {
+  flex-basis: 100%;
+  text-align: center;
+  color: #90a5c0;
+  font-size: 7px;
+  margin-top: 1px;
+}
+.fb-post-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  border-top: 1px solid #e5ecf6;
+  padding: 11px 16px;
+  font-size: 8px;
+  color: #8aa2b9;
+}
+.fb-post-footer a {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #3879c0;
+  white-space: nowrap;
+}
+.fb-post-footer > span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.winner-nameplate {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin: 20px 0 0;
+  color: #e8f5ff;
+  text-shadow: 0 0 12px #009dff;
+}
+.winner-nameplate > span {
+  font-size: 18px;
+  color: #47befe;
+}
+.winner-nameplate b {
+  font-size: 16px;
+  font-weight: 600;
+}
+.winner-nameplate small {
+  display: block;
+  margin-top: 6px;
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: #7bb9e9;
+}
+.arena-ranking {
+  align-self: center;
+  min-width: 0;
+  padding: 22px 0;
+}
+.arena-ranking > h2 {
+  font-size: 14px;
+  line-height: 1.7;
+  font-weight: 600;
+  margin: 0;
+  color: #e4f3ff;
+  letter-spacing: -0.1px;
+  text-shadow: 0 0 10px #287edc;
+}
+.arena-ranking > h2 > span {
+  color: #b7d4ff;
+}
+.arena-ranking > p {
+  font-size: 9px;
+  color: #6089bb;
+  margin: 6px 0 20px;
+}
+.arena-ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  position: relative;
+}
+.arena-ranking-list:before {
+  content: "";
+  position: absolute;
+  inset: -7px -7px;
+  border-left: 1px solid #1b65b122;
+  border-right: 1px solid #1b65b122;
+  pointer-events: none;
+}
+.arena-rank-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 10px;
+  min-height: 49px;
+  border-radius: 4px;
+  border: 1px solid #165fb98c;
+  background: linear-gradient(90deg, #073076bb, #04122ee6);
+  color: #cadfff;
+  text-align: left;
+  width: 100%;
+  position: relative;
+  transition:
+    background 0.2s,
+    box-shadow 0.2s,
+    border-color 0.2s;
+  box-shadow: inset 0 0 7px #1063bd22;
+}
+.arena-rank-row:hover {
+  transform: none;
+  border-color: #6fdaff;
+  background: #094e9a77;
+}
+.arena-rank-row.is-active {
+  border-color: #97e9ff;
+  box-shadow:
+    0 0 13px #0985ff66,
+    inset 0 0 12px #118fff44;
+  background: linear-gradient(90deg, #0b519a, #08234f);
+}
+.arena-rank-row.rank-gold.is-active {
+  border-color: #ffe6a0;
+  box-shadow:
+    0 0 13px #e9c76b88,
+    inset 0 0 17px #d9b45122;
+  background: linear-gradient(90deg, #4b401b99, #182b44);
+  color: #fff0bf;
+}
+.arena-rank-row.rank-gold.is-active:before {
+  content: "";
+  position: absolute;
+  left: 20%;
+  right: 20%;
+  height: 1px;
+  background: #fff5d8;
+  top: -1px;
+  box-shadow: 0 0 10px #ffe4a1;
+}
+.neon-rank-number {
+  font: 800 21px "Manrope";
+  width: 24px;
+  flex-shrink: 0;
+  text-align: center;
+  color: #d0eeff;
+  text-shadow: 0 0 8px #00aeff;
+}
+.rank-gold .neon-rank-number {
+  color: #ffe8a0;
+  text-shadow: 0 0 8px #ffd565;
+}
+.arena-rank-row .facebook-avatar {
+  width: 27px;
+  height: 27px;
+  font-size: 8px;
+  border: 1px solid #95c6ff66;
+}
+.neon-rank-person {
+  min-width: 0;
+  flex: 1;
+}
+.neon-rank-person b {
+  font-size: 10px;
+  font-weight: 500;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.neon-rank-person small {
+  display: block;
+  font-size: 7px;
+  color: #608dc7;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.arena-rank-row > svg {
+  flex-shrink: 0;
+  color: #bfefff;
+  filter: drop-shadow(0 0 4px #1abaff);
+  width: 14px;
+}
+.arena-rank-row > strong {
+  font: 700 13px "Manrope";
+  min-width: 37px;
+  text-align: right;
+  white-space: nowrap;
+}
+.arena-ranking-note {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 8px;
+  color: #659ad3;
+  margin-top: 18px;
+}
+.arena-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 19px 4%;
+  border-top: 1px solid #2389ff22;
+  background: #020b2399;
+  color: #5c94c9;
+  font-size: 8px;
+  letter-spacing: 0.4px;
+}
+.arena-footer > span:first-child {
+  color: #74beee;
+}
+.neon-progress {
+  border: 1px solid #146bb9;
+  padding: 14px;
+  border-radius: 7px;
+  background: #03245a88;
+  margin-top: 20px;
+}
+.neon-progress > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #7bdcff;
+  font-size: 11px;
+}
+.neon-progress-track {
+  height: 4px;
+  background: #16519a55;
+  border-radius: 4px;
+  margin: 12px 0;
+}
+.neon-progress-track i {
+  height: 100%;
+  display: block;
+  background: #7deaff;
+  box-shadow: 0 0 8px #26c4ff;
+  transition: width 0.5s;
+}
+.neon-progress > span {
+  font-size: 8px;
+  color: #689fce;
+}
+.arena-empty,
+.arena-countdown {
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  border: 1px solid #158ef766;
+  border-radius: 15px;
+  background: #051b4488;
+  box-shadow: 0 0 35px #048dff33;
+}
+.arena-empty > svg {
+  color: #38b5ff;
+  filter: drop-shadow(0 0 18px #1c9aff);
+  margin-bottom: 15px;
+}
+.arena-empty h2 {
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0;
+  color: #c3eaff;
+}
+.arena-empty p {
+  font-size: 11px;
+  max-width: 260px;
+  color: #709ece;
+  padding: 0 12px;
+}
+.arena-ranking-empty {
+  min-height: 200px;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  color: #5078ac;
+  border: 1px dashed #265693;
+  border-radius: 7px;
+}
+.arena-countdown > span {
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: #7acfff;
+}
+.arena-countdown strong {
+  font: 800 145px/1.5 "Manrope";
+  text-shadow: 0 0 50px #18baff;
+  color: #cbf6ff;
+  animation: countpulse 1s ease infinite;
+}
+.arena-countdown small {
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: #6ca5da;
+}
+@keyframes post-arrive {
+  from {
+    opacity: 0.1;
+    transform: translateY(10px) scale(0.97);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+@media (min-width: 1600px) {
+  .arena-header {
+    height: 96px;
+  }
+  .arena-layout {
+    gap: 5%;
+    padding: 40px 5%;
+  }
+  .arena-status {
+    font-size: 10px;
+  }
+  .neon-stat {
+    padding: 29px 23px;
+    gap: 22px;
+    margin: 23px 0;
+  }
+  .neon-stat h2 {
+    font-size: 12px;
+  }
+  .neon-stat strong {
+    font-size: 47px;
+  }
+  .neon-stat strong small {
+    font-size: 13px;
+  }
+  .winner-heading h1 {
+    font-size: 40px;
+  }
+  .winner-heading > div > span {
+    font-size: 16px;
+  }
+  .laurel {
+    font-size: 90px;
+  }
+  .fb-post-header h2 {
+    font-size: 14px;
+  }
+  .fb-post-copy {
+    font-size: 12px;
+    max-height: 74px;
+  }
+  .fb-post-header .facebook-avatar {
+    width: 43px;
+    height: 43px;
+  }
+  .fb-post-metrics strong {
+    font-size: 19px;
+  }
+  .arena-ranking > h2 {
+    font-size: 18px;
+  }
+  .arena-ranking > p {
+    font-size: 11px;
+  }
+  .arena-rank-row {
+    min-height: 58px;
+    padding: 11px 13px;
+    gap: 12px;
+  }
+  .neon-rank-person b {
+    font-size: 12px;
+  }
+  .neon-rank-person small {
+    font-size: 8px;
+  }
+  .arena-rank-row > strong {
+    font-size: 16px;
+  }
+  .arena-rank-row .facebook-avatar {
+    width: 32px;
+    height: 32px;
+  }
+  .arena-footer {
+    font-size: 10px;
+    padding: 23px 5%;
+  }
+  .top-pick-buttons button {
+    font-size: 11px;
+    padding: 17px 10px;
+  }
+  .winner-nameplate b {
+    font-size: 20px;
+  }
+}
+@media (max-height: 800px) and (min-width: 1000px) {
+  .arena-header {
+    height: 60px;
+  }
+  .arena-layout {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    gap: 3.5%;
+  }
+  .winner-heading {
+    margin-bottom: 18px;
+  }
+  .winner-heading h1 {
+    font-size: 28px;
+  }
+  .stage-photo {
+    height: 29vh !important;
+  }
+  .fb-post-copy {
+    max-height: 52px;
+    font-size: 9px;
+  }
+  .fb-post-header {
+    padding: 10px 14px 8px;
+  }
+  .fb-post-metrics {
+    padding: 10px;
+  }
+  .fb-post-footer {
+    padding: 8px 13px;
+  }
+  .winner-nameplate {
+    margin-top: 16px;
+  }
+  .arena-ranking-list {
+    gap: 5px;
+  }
+  .arena-rank-row {
+    min-height: 40px;
+    padding: 6px 9px;
+  }
+  .neon-rank-person small {
+    display: none;
+  }
+  .arena-ranking > p {
+    margin-bottom: 13px;
+  }
+  .neon-stat {
+    padding: 20px 17px;
+  }
+  .arena-event-note {
+    margin-top: 22px;
+  }
+  .arena-top-picks {
+    margin-top: 23px;
+  }
+  .arena-footer {
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+}
+@media (max-height: 500px) and (min-width: 1000px) {
+  .arena-header {
+    height: 42px;
+  }
+  .arena-event,
+  .arena-event-note,
+  .arena-ranking > p,
+  .arena-ranking-note,
+  .fb-post-copy,
+  .fb-post-footer,
+  .arena-status,
+  .arena-footer {
+    display: none;
+  }
+  .arena-layout {
+    padding: 15px 5%;
+    gap: 5%;
+    grid-template-columns: 0.9fr 1fr 1.1fr;
+  }
+  .arena-ranking {
+    padding: 0;
+  }
+  .winner-heading h1 {
+    font-size: 21px;
+  }
+  .winner-heading > div > span {
+    font-size: 10px;
+  }
+  .laurel {
+    font-size: 45px;
+  }
+  .winner-heading {
+    gap: 10px;
+    margin-bottom: 13px;
+  }
+  .stage-photo {
+    height: 30vh !important;
+  }
+  .fb-post-header {
+    padding: 7px 10px;
+  }
+  .fb-post-header h2 {
+    font-size: 9px;
+  }
+  .fb-post-header .facebook-avatar {
+    width: 25px;
+    height: 25px;
+  }
+  .fb-post-header > div > span {
+    font-size: 6px;
+  }
+  .fb-post-metrics {
+    padding: 8px;
+  }
+  .fb-post-metrics strong {
+    font-size: 12px;
+  }
+  .fb-post-metrics small {
+    display: none;
+  }
+  .fb-post-metrics svg {
+    width: 15px;
+  }
+  .post-halo {
+    max-width: 300px;
+  }
+  .winner-nameplate {
+    margin-top: 12px;
+  }
+  .winner-nameplate b {
+    font-size: 11px;
+  }
+  .winner-nameplate small {
+    font-size: 6px;
+  }
+  .arena-rank-row {
+    min-height: 22px;
+    padding: 3px 7px;
+    gap: 6px;
+  }
+  .arena-rank-row .facebook-avatar {
+    height: 18px;
+    width: 18px;
+    font-size: 6px;
+  }
+  .neon-rank-number {
+    font-size: 13px;
+    width: 16px;
+  }
+  .neon-rank-person b {
+    font-size: 8px;
+  }
+  .arena-rank-row > strong {
+    font-size: 10px;
+  }
+  .arena-rank-row > svg {
+    width: 10px;
+  }
+  .arena-ranking-list {
+    gap: 3px;
+  }
+  .arena-ranking > h2 {
+    font-size: 11px;
+    margin-bottom: 9px;
+  }
+  .neon-stat {
+    padding: 16px;
+    margin: 17px 0;
+  }
+  .neon-stat h2 {
+    font-size: 8px;
+  }
+  .neon-stat strong {
+    font-size: 26px;
+  }
+  .neon-stat > svg {
+    width: 30px;
+  }
+  .arena-top-picks {
+    margin-top: 18px;
+  }
+  .arena-section-label {
+    font-size: 6px;
+  }
+  .top-pick-buttons button {
+    flex-direction: row;
+    padding: 8px;
+    font-size: 8px;
+  }
+  .arena-ceremony {
+    margin-top: 10px;
+    font-size: 8px;
+    padding: 8px;
+  }
+  .arena-brand {
+    font-size: 16px;
+  }
+  .arena-tools button {
+    font-size: 8px;
+    padding: 6px 8px;
+  }
+}
+@media (max-width: 999px) {
+  .arena-layout {
+    grid-template-columns: 1fr 1.25fr;
+    gap: 28px;
+    padding: 25px 5%;
+  }
+  .arena-center {
+    grid-column: 2;
+    grid-row: 1 / 3;
+  }
+  .arena-stats {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .arena-ranking {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .arena-status {
+    font-size: 7px;
+  }
+  .neon-stat {
+    padding: 16px 13px;
+    gap: 12px;
+  }
+  .neon-stat > svg {
+    width: 29px;
+  }
+  .neon-stat h2 {
+    font-size: 8px;
+  }
+  .neon-stat strong {
+    font-size: 28px;
+  }
+  .arena-event-note {
+    display: none;
+  }
+  .arena-ranking > h2 {
+    font-size: 11px;
+  }
+  .arena-rank-row {
+    gap: 6px;
+    padding: 6px 8px;
+    min-height: 39px;
+  }
+  .neon-rank-person small {
+    display: none;
+  }
+  .neon-rank-person b {
+    font-size: 9px;
+  }
+  .neon-rank-number {
+    font-size: 16px;
+    width: 18px;
+  }
+  .arena-rank-row > strong {
+    font-size: 11px;
+  }
+  .arena-rank-row .facebook-avatar {
+    width: 22px;
+    height: 22px;
+  }
+  .winner-heading h1 {
+    font-size: 26px;
+  }
+  .winner-heading {
+    gap: 10px;
+  }
+  .laurel {
+    font-size: 55px;
+  }
+  .stage-photo {
+    height: 290px !important;
+  }
+  .arena-event {
+    display: none;
+  }
+  .arena-header {
+    height: 70px;
+  }
+  .arena-footer {
+    font-size: 7px;
+  }
+  .arena-ranking-list {
+    gap: 5px;
+  }
+}
+@media (max-width: 620px) {
+  .arena-header {
+    margin: 0 20px;
+    height: 65px;
+  }
+  .arena-brand {
+    font-size: 17px;
+    gap: 8px;
+  }
+  .arena-brand small {
+    font-size: 6px;
+    letter-spacing: 3px;
+  }
+  .arena-tools button {
+    padding: 7px;
+  }
+  .arena-tools button span {
+    display: none;
+  }
+  .arena-layout {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 24px;
+    gap: 28px;
+  }
+  .arena-stats,
+  .arena-center,
+  .arena-ranking {
+    width: 100%;
+  }
+  .arena-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .arena-status {
+    grid-column: 1 / -1;
+    margin: 0 0 3px;
+    font-size: 7px;
+  }
+  .neon-stat {
+    margin: 0;
+    padding: 14px 11px;
+    gap: 8px;
+    min-width: 0;
+  }
+  .neon-stat > svg {
+    width: 24px;
+    height: 24px;
+  }
+  .neon-stat h2 {
+    font-size: 6px;
+    margin-bottom: 8px;
+  }
+  .neon-stat strong {
+    font-size: 24px;
+  }
+  .neon-stat strong small {
+    font-size: 7px;
+    margin-left: 4px;
+  }
+  .arena-top-picks {
+    grid-column: 1 / -1;
+    margin-top: 5px;
+  }
+  .arena-section-label {
+    display: none;
+  }
+  .top-pick-buttons {
+    gap: 8px;
+  }
+  .top-pick-buttons button {
+    flex-direction: row;
+    font-size: 9px;
+    padding: 10px;
+  }
+  .arena-ceremony,
+  .neon-progress {
+    grid-column: 1 / -1;
+    margin-top: 5px;
+  }
+  .winner-heading {
+    margin-bottom: 22px;
+  }
+  .winner-heading h1 {
+    font-size: 27px;
+  }
+  .winner-heading > div > span {
+    font-size: 10px;
+  }
+  .stage-photo {
+    height: 270px !important;
+  }
+  .post-rank-emblem {
+    right: -10px;
+    top: -12px;
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+  .post-halo {
+    width: 100%;
+  }
+  .fb-post-copy {
+    font-size: 10px;
+  }
+  .arena-ranking {
+    padding: 0 0 10px;
+  }
+  .arena-ranking > h2 {
+    font-size: 12px;
+  }
+  .arena-ranking > p {
+    font-size: 9px;
+  }
+  .arena-rank-row {
+    min-height: 43px;
+    padding: 8px 10px;
+    gap: 10px;
+  }
+  .neon-rank-person b {
+    font-size: 10px;
+  }
+  .neon-rank-person small {
+    display: block;
+    font-size: 7px;
+  }
+  .arena-rank-row > strong {
+    font-size: 13px;
+  }
+  .arena-rank-row .facebook-avatar {
+    width: 27px;
+    height: 27px;
+  }
+  .arena-footer {
+    flex-direction: column;
+    align-items: center;
+    gap: 9px;
+    text-align: center;
+    font-size: 7px;
+    padding: 17px 20px;
+  }
+  .arena-water {
+    bottom: 38%;
+    height: 37%;
+    width: 180%;
+    left: -40%;
+  }
+  .winner-nameplate b {
+    font-size: 16px;
+  }
+  .arena-empty {
+    min-height: 300px;
+  }
+  .arena-empty h2 {
+    font-size: 16px;
+  }
+  .arena-countdown {
+    min-height: 380px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .post-halo,
+  .arena-countdown strong {
+    animation: none !important;
+  }
+}
