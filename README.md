@@ -21,7 +21,7 @@ Hệ thống minigame sự kiện gồm form nhận bài Facebook, CMS quản tr
 Yêu cầu Node.js 20 trở lên và một database Postgres/Neon mới. Không dùng chung database production nếu chỉ muốn phát triển hoặc thử nghiệm.
 
 ```powershell
-git clone <URL_REPOSITORY>
+git clone https://github.com/camtiensinh/serena-riverside.git
 cd serena-riverside
 npm install
 Copy-Item .env.example .env.local
@@ -73,3 +73,4 @@ npm run build
 ## Dữ liệu và tài khoản
 
 Repository không chứa database production, API key Apify, mật khẩu CMS hay session secret. Người nhận mã nguồn phải tạo database và biến môi trường của riêng họ.
+
