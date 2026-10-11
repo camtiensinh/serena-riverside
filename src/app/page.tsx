@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Check, ArrowRight, Link as LinkIcon, Sparkles } from "lucide-react";
-import Image from "next/image";
 import { DISTRIBUTORS } from "@/lib/distributors";
 import "./entry.css";
 import EventLogo from "@/components/event-logo";
@@ -44,18 +43,6 @@ export default function Home() {
         <EventLogo variant="black" />
       </nav>
       <main className="entry-layout">
-        <section
-          className="kickoff-visual"
-          aria-label="Lễ kick-off Serena Riverside"
-        >
-          <Image
-            src="/serena-form-kv-27-10-2026.png"
-            alt="Sống trọn từng khoảnh khắc tại Serena Riverside"
-            fill
-            priority
-            sizes="(max-width: 760px) 100vw, 50vw"
-          />
-        </section>
         <section className="entry-card">
           <div className="card-kicker">
             <Sparkles size={18} /> SẴN SÀNG TỎA SÁNG?
