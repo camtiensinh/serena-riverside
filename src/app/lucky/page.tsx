@@ -50,6 +50,10 @@ export default function LuckyDraw() {
       return;
     nonce.current = state.spin_nonce;
     setShowWinner(false);
+    if (state.presentation_mode === "announce") {
+      const id = setTimeout(() => setShowWinner(true), 80);
+      return () => clearTimeout(id);
+    }
     const slice = 360 / entries.length,
       target = 360 - (winnerIndex * slice + slice / 2);
     setRotation((r) => r + 360 * 8 + ((target - (r % 360) + 360) % 360));
@@ -62,7 +66,13 @@ export default function LuckyDraw() {
       Math.max(0, 7200 - elapsed),
     );
     return () => clearTimeout(id);
-  }, [state.spin_nonce, state.started_at, winnerIndex, entries.length]);
+  }, [
+    state.spin_nonce,
+    state.started_at,
+    state.presentation_mode,
+    winnerIndex,
+    entries.length,
+  ]);
   const colors = useMemo(
     () =>
       entries.map((_, i) =>

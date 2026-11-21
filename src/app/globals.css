@@ -2949,6 +2949,116 @@ tbody tr:hover {
 .prize-card.done > span {
   color: #ad7916;
 }
+.direct-award-control {
+  padding-bottom: 24px;
+}
+.direct-award-control .panel-heading {
+  padding-right: 22px;
+}
+.direct-award-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
+  gap: 22px;
+  padding: 20px 22px 0;
+}
+.direct-entry-picker {
+  min-width: 0;
+}
+.direct-search {
+  width: 100%;
+  margin-bottom: 10px;
+}
+.direct-entry-list {
+  max-height: 430px;
+  overflow: auto;
+  display: grid;
+  gap: 7px;
+  padding-right: 5px;
+}
+.direct-entry-list > button {
+  justify-content: space-between;
+  text-align: left;
+  background: #fff;
+}
+.direct-entry-list > button span {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+.direct-entry-list > button b,
+.direct-entry-list > button small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.direct-entry-list > button small {
+  color: #7d9088;
+}
+.direct-entry-list > button svg {
+  flex: 0 0 auto;
+  opacity: 0;
+}
+.direct-entry-list > button.active {
+  border-color: #0a99cc;
+  background: #eaf9ff;
+  color: #056a94;
+}
+.direct-entry-list > button.active svg {
+  opacity: 1;
+}
+.direct-list-hint {
+  display: block;
+  margin-top: 9px;
+  color: #7d9088;
+}
+.direct-award-actions {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+}
+.selected-direct-entry {
+  min-height: 102px;
+  display: grid;
+  align-content: center;
+  gap: 5px;
+  padding: 17px;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #007eafe8, #08a9d7);
+  color: white;
+}
+.selected-direct-entry > span {
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  opacity: 0.8;
+}
+.selected-direct-entry > b {
+  font-size: 19px;
+}
+.selected-direct-entry > small {
+  opacity: 0.85;
+}
+.direct-rank-buttons {
+  display: grid;
+  gap: 8px;
+}
+.direct-rank-buttons > button {
+  justify-content: flex-start;
+  text-align: left;
+  background: #f7fcff;
+  border-color: #cde7f1;
+}
+.direct-rank-buttons > button > span {
+  display: grid;
+  gap: 2px;
+}
+.direct-rank-buttons > button small {
+  color: #7a8d95;
+}
+.direct-rank-buttons > button.done {
+  background: #fff5d2;
+  border-color: #e8c968;
+  color: #93610d;
+}
 @media (max-width: 850px) {
   .lucky-grid {
     grid-template-columns: 1fr;
@@ -2957,6 +3067,9 @@ tbody tr:hover {
     display: none;
   }
   .prize-buttons {
+    grid-template-columns: 1fr;
+  }
+  .direct-award-layout {
     grid-template-columns: 1fr;
   }
   .wheel-control-card {

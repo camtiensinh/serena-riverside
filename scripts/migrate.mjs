@@ -98,3 +98,15 @@ await sql.transaction(
     .map((s) => sql.query(s)),
 );
 console.log("Lucky wheel preset winners ready.");
+const announcementMigration = await readFile(
+  new URL("../src/lib/migrations/009-wheel-announcements.sql", import.meta.url),
+  "utf8",
+);
+await sql.transaction(
+  announcementMigration
+    .split(";")
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .map((s) => sql.query(s)),
+);
+console.log("Lucky wheel direct announcements ready.");

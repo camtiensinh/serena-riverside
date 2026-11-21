@@ -1459,20 +1459,37 @@ function LuckyPanel({
 }) {
   const [file, setFile] = useState<File | null>(null),
     [name, setName] = useState("Khách tham dự 20.09"),
-    [segmentId, setSegmentId] = useState(data.wheel?.state?.segment_id || "");
+    [segmentId, setSegmentId] = useState(data.wheel?.state?.segment_id || ""),
+    [announceSearch, setAnnounceSearch] = useState(""),
+    [announceEntryId, setAnnounceEntryId] = useState("");
   const wheel = data.wheel || {
       segments: [],
       state: {},
       winners: [],
       entries: [],
       presets: [],
+      announcements: [],
     },
     current = wheel.segments.find((s: Row) => s.id === wheel.state?.segment_id);
   const winners = wheel.winners.filter(
     (w: Row) => w.segment_id === wheel.state?.segment_id,
   );
   const entries = wheel.entries || [],
-    presets = wheel.presets || [];
+    presets = wheel.presets || [],
+    announcements = wheel.announcements || [],
+    normalizedSearch = announceSearch.trim().toLocaleLowerCase("vi-VN"),
+    visibleEntries = entries
+      .filter((entry: Row) =>
+        `${entry.name} ${entry.team}`
+          .toLocaleLowerCase("vi-VN")
+          .includes(normalizedSearch),
+      )
+      .slice(0, 100),
+    selectedEntry = entries.find((entry: Row) => entry.id === announceEntryId);
+  useEffect(() => {
+    setAnnounceEntryId("");
+    setAnnounceSearch("");
+  }, [wheel.state?.segment_id]);
   async function upload() {
     if (!file) return;
     setError("");
@@ -1688,6 +1705,90 @@ function LuckyPanel({
               </div>
             );
           })}
+        </div>
+      </section>
+      <section className="panel direct-award-control">
+        <div className="panel-heading">
+          <div>
+            <h2>Công bố trực tiếp trên LED</h2>
+            <p>Chọn một người rồi công bố giải 5–1, không chạy vòng quay</p>
+          </div>
+          <a className="button" href="/lucky" target="_blank">
+            <Maximize2 size={16} /> Mở màn LED
+          </a>
+        </div>
+        <div className="direct-award-layout">
+          <div className="direct-entry-picker">
+            <div className="search-input direct-search">
+              <Search size={16} />
+              <input
+                value={announceSearch}
+                onChange={(event) => setAnnounceSearch(event.target.value)}
+                placeholder="Tìm theo tên hoặc đại lý…"
+              />
+            </div>
+            <div className="direct-entry-list">
+              {visibleEntries.map((entry: Row) => (
+                <button
+                  key={entry.id}
+                  className={announceEntryId === entry.id ? "active" : ""}
+                  onClick={() => setAnnounceEntryId(entry.id)}
+                >
+                  <span>
+                    <b>{entry.name}</b>
+                    <small>{entry.team}</small>
+                  </span>
+                  <CheckCircle2 size={17} />
+                </button>
+              ))}
+              {!visibleEntries.length && (
+                <Empty text="Không tìm thấy người phù hợp" />
+              )}
+            </div>
+            {entries.length > 100 && !announceSearch && (
+              <small className="direct-list-hint">
+                Đang hiển thị 100/{entries.length} người · nhập tên để tìm nhanh
+              </small>
+            )}
+          </div>
+          <div className="direct-award-actions">
+            <div className="selected-direct-entry">
+              <span>NGƯỜI ĐƯỢC CHỌN</span>
+              <b>{selectedEntry?.name || "Chưa chọn người"}</b>
+              <small>{selectedEntry?.team || "Nhấn vào danh sách bên trái"}</small>
+            </div>
+            <div className="direct-rank-buttons">
+              {[5, 4, 3, 2, 1].map((rank) => {
+                const announced = announcements.find(
+                  (item: Row) => item.prize_rank === rank,
+                );
+                return (
+                  <button
+                    key={rank}
+                    className={announced ? "done" : ""}
+                    disabled={!current || !announceEntryId || !!busy}
+                    onClick={() =>
+                      action(
+                        "wheel/announce",
+                        { rank, entryId: announceEntryId },
+                        `Đã công bố ${selectedEntry?.name} nhận giải ${rank} trên màn LED`,
+                      )
+                    }
+                  >
+                    <Trophy size={18} />
+                    <span>
+                      <b>Công bố giải {rank}</b>
+                      <small>
+                        {announced
+                          ? `Hiện tại: ${announced.name}`
+                          : "Hiển thị ngay, không quay"}
+                      </small>
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </section>
     </div>
