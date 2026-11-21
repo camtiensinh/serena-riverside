@@ -309,6 +309,16 @@ async function handle(
       await sql`UPDATE wheel_state SET segment_id=COALESCE(segment_id,${segmentId}),updated_at=now() WHERE id=1`;
       return json({ ok: true, segmentId, inserted: result[1].length });
     }
+    if (path === "wheel/segments/delete") {
+      const { ids } = z
+        .object({ ids: z.array(z.uuid()).min(1).max(5000) })
+        .parse(await req.json());
+      const result = await sql.transaction([
+        sql`UPDATE wheel_state SET segment_id=NULL,phase='waiting',presentation_mode='spin',prize_rank=NULL,winner_entry_id=NULL,spin_nonce=NULL,started_at=NULL,updated_at=now() WHERE id=1 AND segment_id=ANY(${ids}::uuid[])`,
+        sql`DELETE FROM wheel_segments WHERE id=ANY(${ids}::uuid[]) RETURNING id`,
+      ]);
+      return json({ ok: true, deleted: result[1].length });
+    }
     if (path === "wheel/select") {
       const { segmentId } = z
         .object({ segmentId: z.uuid() })

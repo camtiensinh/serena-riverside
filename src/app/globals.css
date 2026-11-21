@@ -2855,6 +2855,39 @@ tbody tr:hover {
   margin: 14px 22px 0;
   width: auto;
 }
+.segment-bulk-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 10px 22px 0;
+  color: #62776d;
+  font-size: 12px;
+}
+.segment-bulk-bar label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #244239;
+  font-weight: 700;
+  cursor: pointer;
+}
+.segment-bulk-bar input,
+.segment-row > input {
+  width: 16px;
+  height: 16px;
+  accent-color: #078ab9;
+  cursor: pointer;
+}
+.segment-delete-selected {
+  margin-left: auto;
+  border-color: #efc7c7;
+  background: #fff7f7;
+  color: #c94747;
+}
+.segment-delete-selected:hover:not(:disabled) {
+  border-color: #db6b6b;
+  background: #fff0f0;
+}
 .lucky-admin .search-input {
   min-height: 42px;
   display: flex;
@@ -2883,26 +2916,32 @@ tbody tr:hover {
   border: 0;
   box-shadow: none;
 }
-.segment-list > button {
+.segment-row {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: center;
+  gap: 9px;
+}
+.segment-row > button {
   justify-content: space-between;
   text-align: left;
 }
-.segment-list > button span {
+.segment-row > button span {
   display: grid;
   gap: 4px;
 }
-.segment-list > button small {
+.segment-row > button small {
   color: #829087;
 }
-.segment-list > button svg {
+.segment-row > button svg {
   opacity: 0;
 }
-.segment-list > button.active {
+.segment-row > button.active {
   border-color: #159dce;
   background: #edfaff;
   color: #05658f;
 }
-.segment-list > button.active svg {
+.segment-row > button.active svg {
   opacity: 1;
 }
 .lucky-segment-panel > button {

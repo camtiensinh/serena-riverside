@@ -1460,6 +1460,7 @@ function LuckyPanel({
   const [file, setFile] = useState<File | null>(null),
     [name, setName] = useState("Khách tham dự 20.09"),
     [segmentSearch, setSegmentSearch] = useState(""),
+    [selectedSegmentIds, setSelectedSegmentIds] = useState<string[]>([]),
     [presetSearches, setPresetSearches] = useState<Record<number, string>>({}),
     [announceSearch, setAnnounceSearch] = useState(""),
     [announceEntryId, setAnnounceEntryId] = useState("");
@@ -1486,6 +1487,11 @@ function LuckyPanel({
         .toLocaleLowerCase("vi-VN")
         .includes(normalizedSegmentSearch),
     ),
+    allSegmentsSelected =
+      wheel.segments.length > 0 &&
+      wheel.segments.every((segment: Row) =>
+        selectedSegmentIds.includes(segment.id),
+      ),
     normalizedSearch = announceSearch.trim().toLocaleLowerCase("vi-VN"),
     visibleEntries = entries
       .filter((entry: Row) =>
@@ -1517,6 +1523,21 @@ function LuckyPanel({
     } catch (e) {
       setError((e as Error).message);
     }
+  }
+  async function deleteSelectedSegments() {
+    if (!selectedSegmentIds.length) return;
+    if (
+      !window.confirm(
+        `Xóa ${selectedSegmentIds.length} segment đã chọn? Dữ liệu người tham dự và kết quả quay trong các segment này cũng sẽ bị xóa.`,
+      )
+    )
+      return;
+    const deleted = await action(
+      "wheel/segments/delete",
+      { ids: selectedSegmentIds },
+      `Đã xóa ${selectedSegmentIds.length} segment.`,
+    );
+    if (deleted) setSelectedSegmentIds([]);
   }
   return (
     <div className="lucky-admin">
@@ -1557,27 +1578,64 @@ function LuckyPanel({
               placeholder="Tìm segment…"
             />
           </div>
-          <div className="segment-list">
-            {visibleSegments.map((s: Row) => (
-              <button
-                key={s.id}
-                className={wheel.state?.segment_id === s.id ? "active" : ""}
-                onClick={() =>
-                  action(
-                    "wheel/select",
-                    { segmentId: s.id },
-                    `Đã chọn segment ${s.name}`,
+          <div className="segment-bulk-bar">
+            <label>
+              <input
+                type="checkbox"
+                checked={allSegmentsSelected}
+                onChange={() =>
+                  setSelectedSegmentIds(
+                    allSegmentsSelected
+                      ? []
+                      : wheel.segments.map((segment: Row) => segment.id),
                   )
                 }
-              >
-                <span>
-                  <b>{s.name}</b>
-                  <small>
-                    {s.entry_count} khách · tạo {date(s.created_at)}
-                  </small>
-                </span>
-                <CheckCircle2 size={18} />
-              </button>
+              />
+              Chọn tất cả ({wheel.segments.length})
+            </label>
+            <span>{selectedSegmentIds.length} đã chọn</span>
+            <button
+              className="segment-delete-selected"
+              disabled={!selectedSegmentIds.length || !!busy}
+              onClick={deleteSelectedSegments}
+            >
+              <Trash2 size={15} /> Xóa đã chọn
+            </button>
+          </div>
+          <div className="segment-list">
+            {visibleSegments.map((s: Row) => (
+              <div className="segment-row" key={s.id}>
+                <input
+                  type="checkbox"
+                  aria-label={`Chọn segment ${s.name}`}
+                  checked={selectedSegmentIds.includes(s.id)}
+                  onChange={() =>
+                    setSelectedSegmentIds((ids) =>
+                      ids.includes(s.id)
+                        ? ids.filter((id) => id !== s.id)
+                        : [...ids, s.id],
+                    )
+                  }
+                />
+                <button
+                  className={wheel.state?.segment_id === s.id ? "active" : ""}
+                  onClick={() =>
+                    action(
+                      "wheel/select",
+                      { segmentId: s.id },
+                      `Đã chọn segment ${s.name}`,
+                    )
+                  }
+                >
+                  <span>
+                    <b>{s.name}</b>
+                    <small>
+                      {s.entry_count} khách · tạo {date(s.created_at)}
+                    </small>
+                  </span>
+                  <CheckCircle2 size={18} />
+                </button>
+              </div>
             ))}
             {!visibleSegments.length && (
               <Empty
