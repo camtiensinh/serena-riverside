@@ -16,6 +16,7 @@ try {
       "005-reactions-default.sql",
       "006-lucky-wheel.sql",
       "007-wheel-redraw.sql",
+      "008-wheel-presets.sql",
     ].map((name) => readFile(`src/lib/migrations/${name}`, "utf8")),
   );
   await qa.transaction([

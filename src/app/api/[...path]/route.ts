@@ -16,6 +16,7 @@ import { facebookUrl, rank, checkPost } from "@/lib/rules";
 import { startScan, tick } from "@/lib/scanner";
 import { parseSubmissionWorkbook } from "@/lib/import-submissions";
 import { randomInt, randomUUID } from "node:crypto";
+import { chooseWheelWinner, type WheelCandidate } from "@/lib/wheel";
 export const runtime = "nodejs";
 export const maxDuration = 120;
 export const dynamic = "force-dynamic";
@@ -164,6 +165,8 @@ async function handle(
         sql`SELECT s.*,count(e.id)::int AS entry_count FROM wheel_segments s LEFT JOIN wheel_entries e ON e.segment_id=s.id GROUP BY s.id ORDER BY s.created_at DESC`,
         sql`SELECT ws.*,s.name AS segment_name,e.name AS winner_name,e.team AS winner_team FROM wheel_state ws LEFT JOIN wheel_segments s ON s.id=ws.segment_id LEFT JOIN wheel_entries e ON e.id=ws.winner_entry_id WHERE ws.id=1`,
         sql`SELECT w.*,e.name,e.team FROM wheel_winners w JOIN wheel_entries e ON e.id=w.entry_id ORDER BY w.selected_at DESC`,
+        sql`SELECT e.id,e.segment_id,e.name,e.team,e.facebook_url FROM wheel_entries e JOIN wheel_state ws ON ws.segment_id=e.segment_id AND ws.id=1 ORDER BY lower(e.name),e.created_at,e.id`,
+        sql`SELECT p.segment_id,p.prize_rank,p.entry_id,p.updated_at,e.name,e.team FROM wheel_presets p JOIN wheel_entries e ON e.id=p.entry_id JOIN wheel_state ws ON ws.segment_id=p.segment_id AND ws.id=1 ORDER BY p.prize_rank DESC`,
       ]);
       return json({
         settings: results[0][0],
@@ -177,6 +180,8 @@ async function handle(
           segments: results[7],
           state: results[8][0],
           winners: results[9],
+          entries: results[10],
+          presets: results[11],
         },
       });
     }
@@ -312,6 +317,44 @@ async function handle(
       await sql`UPDATE wheel_state SET segment_id=${segmentId},phase='waiting',prize_rank=NULL,winner_entry_id=NULL,spin_nonce=NULL,started_at=NULL,updated_at=now() WHERE id=1`;
       return json({ ok: true });
     }
+    if (path === "wheel/preset") {
+      const data = z
+        .object({
+          rank: z.number().int().min(1).max(3),
+          entryId: z.uuid().nullable(),
+        })
+        .parse(await req.json());
+      const [state] = await sql`SELECT segment_id FROM wheel_state WHERE id=1`;
+      if (!state?.segment_id)
+        return json({ error: "Hãy chọn segment trước" }, 409);
+      if (data.entryId === null) {
+        await sql`DELETE FROM wheel_presets WHERE segment_id=${state.segment_id} AND prize_rank=${data.rank}`;
+        return json({ ok: true });
+      }
+      const [entry] =
+        await sql`SELECT id FROM wheel_entries WHERE id=${data.entryId} AND segment_id=${state.segment_id}`;
+      if (!entry)
+        return json({ error: "Người được chọn không thuộc segment hiện tại" }, 409);
+      const [conflict] =
+        await sql`SELECT prize_rank FROM wheel_presets WHERE segment_id=${state.segment_id} AND entry_id=${data.entryId} AND prize_rank<>${data.rank}`;
+      if (conflict)
+        return json(
+          { error: `Người này đã được chỉ định cho giải ${conflict.prize_rank}` },
+          409,
+        );
+      const [won] =
+        await sql`SELECT prize_rank FROM wheel_winners WHERE segment_id=${state.segment_id} AND entry_id=${data.entryId} AND prize_rank<>${data.rank}`;
+      if (won)
+        return json(
+          { error: `Người này đã trúng giải ${won.prize_rank}` },
+          409,
+        );
+      await sql.transaction([
+        sql`INSERT INTO wheel_presets(segment_id,prize_rank,entry_id,updated_at) VALUES(${state.segment_id},${data.rank},${data.entryId},now()) ON CONFLICT(segment_id,prize_rank) DO UPDATE SET entry_id=EXCLUDED.entry_id,updated_at=now()`,
+        sql`DELETE FROM wheel_redraw_exclusions WHERE segment_id=${state.segment_id} AND entry_id=${data.entryId}`,
+      ]);
+      return json({ ok: true });
+    }
     if (path === "wheel/spin") {
       const { rank: prizeRank } = z
         .object({ rank: z.number().int().min(1).max(3) })
@@ -322,12 +365,26 @@ async function handle(
         return json({ error: "Hãy chọn segment trước khi quay" }, 409);
       const [already] =
         await sql`SELECT entry_id FROM wheel_winners WHERE segment_id=${state.segment_id} AND prize_rank=${prizeRank}`;
+      const [preset] =
+        await sql`SELECT entry_id FROM wheel_presets WHERE segment_id=${state.segment_id} AND prize_rank=${prizeRank}`;
       const eligible =
         await sql`SELECT e.id,e.name,e.team FROM wheel_entries e WHERE e.segment_id=${state.segment_id} AND (${already?.entry_id ?? null}::uuid IS NULL OR e.id<>${already?.entry_id ?? null}::uuid) AND NOT EXISTS(SELECT 1 FROM wheel_winners w WHERE w.segment_id=e.segment_id AND w.entry_id=e.id AND w.prize_rank<>${prizeRank}) AND NOT EXISTS(SELECT 1 FROM wheel_redraw_exclusions x WHERE x.segment_id=e.segment_id AND x.entry_id=e.id) ORDER BY e.created_at,e.id`;
       if (!eligible.length)
         return json({ error: "Segment không còn người đủ điều kiện" }, 409);
-      const winner = eligible[randomInt(eligible.length)],
-        nonce = randomUUID();
+      const winner = chooseWheelWinner(
+        eligible as WheelCandidate[],
+        preset?.entry_id || null,
+        randomInt,
+      );
+      if (!winner)
+        return json(
+          {
+            error:
+              "Người được chỉ định không còn đủ điều kiện. Hãy chọn người khác hoặc chuyển về Ngẫu nhiên.",
+          },
+          409,
+        );
+      const nonce = randomUUID();
       const statements: any[] = [];
       if (already)
         statements.push(

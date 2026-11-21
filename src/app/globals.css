@@ -2874,6 +2874,17 @@ tbody tr:hover {
 .lucky-segment-panel > button {
   margin-left: 22px;
 }
+.segment-source-note {
+  margin: 10px 22px 0;
+  color: #6f8178;
+  font-size: 11px;
+  line-height: 1.55;
+}
+.segment-from-submissions {
+  background: #078ab9;
+  border-color: #078ab9;
+  color: white;
+}
 .lucky-import-body {
   padding: 5px 22px;
 }
@@ -2886,29 +2897,56 @@ tbody tr:hover {
   gap: 14px;
   padding: 20px 22px;
 }
-.prize-buttons > button {
-  min-height: 130px;
-  align-items: flex-start;
-  flex-direction: column;
+.prize-card {
+  min-width: 0;
+  padding: 16px;
+  display: grid;
+  gap: 11px;
   background: linear-gradient(145deg, #f7fcff, #e9f7fc);
-  border-color: #cae7f1;
+  border: 1px solid #cae7f1;
+  border-radius: 12px;
 }
-.prize-buttons > button span {
+.prize-card > span {
   font-size: 9px;
+  font-weight: 800;
   letter-spacing: 0.2em;
   color: #0b8cbd;
 }
-.prize-buttons > button b {
+.prize-card label {
+  display: grid;
+  gap: 6px;
+  font-size: 10px;
+  color: #607982;
+}
+.prize-card select {
+  width: 100%;
+  min-width: 0;
+  font-size: 11px;
+  background: white;
+}
+.prize-card .preset-status {
+  min-height: 30px;
+  color: #547783;
+  line-height: 1.4;
+}
+.prize-card > button {
+  min-height: 86px;
+  align-items: flex-start;
+  flex-direction: column;
+  background: #fff;
+  border-color: #cae7f1;
+}
+.prize-card > button b {
   font-size: 17px;
 }
-.prize-buttons > button small {
+.prize-card > button small {
   color: #79909b;
 }
-.prize-buttons > button.done {
+.prize-card.done {
   background: linear-gradient(145deg, #fff9e8, #ffe8a5);
   border-color: #eacb74;
 }
-.prize-buttons > button.done span {
+.prize-card.done > span {
   color: #ad7916;
 }
 @media (max-width: 850px) {

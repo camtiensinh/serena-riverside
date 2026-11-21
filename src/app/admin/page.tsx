@@ -1460,11 +1460,19 @@ function LuckyPanel({
   const [file, setFile] = useState<File | null>(null),
     [name, setName] = useState("Khách tham dự 20.09"),
     [segmentId, setSegmentId] = useState(data.wheel?.state?.segment_id || "");
-  const wheel = data.wheel || { segments: [], state: {}, winners: [] },
+  const wheel = data.wheel || {
+      segments: [],
+      state: {},
+      winners: [],
+      entries: [],
+      presets: [],
+    },
     current = wheel.segments.find((s: Row) => s.id === wheel.state?.segment_id);
   const winners = wheel.winners.filter(
     (w: Row) => w.segment_id === wheel.state?.segment_id,
   );
+  const entries = wheel.entries || [],
+    presets = wheel.presets || [];
   async function upload() {
     if (!file) return;
     setError("");
@@ -1493,8 +1501,9 @@ function LuckyPanel({
           </span>
           <h2>Khơi nguồn may mắn</h2>
           <p>
-            Kết quả được chọn ngẫu nhiên trên server, mỗi link Facebook chỉ có
-            một vé trong segment và người đã trúng không thể trúng lại.
+            Segment lấy trực tiếp từ người đã gửi form, không cần quét Apify.
+            Mỗi link Facebook chỉ có một vé; có thể quay ngẫu nhiên hoặc chỉ
+            định trước người nhận từng giải.
           </p>
           <a className="button primary" href="/lucky" target="_blank">
             <Maximize2 size={16} /> Mở màn hình vòng quay
@@ -1511,7 +1520,7 @@ function LuckyPanel({
           <div className="panel-heading">
             <div>
               <h2>Danh sách segment</h2>
-              <p>Chọn tệp đang dùng để quay</p>
+              <p>Tạo trực tiếp từ form đã nhận hoặc chọn tệp đang dùng</p>
             </div>
           </div>
           <div className="segment-list">
@@ -1539,6 +1548,7 @@ function LuckyPanel({
             {!wheel.segments.length && <Empty text="Chưa có segment" />}
           </div>
           <button
+            className="primary segment-from-submissions"
             disabled={!rowsAvailable(data)}
             onClick={() =>
               action(
@@ -1550,8 +1560,12 @@ function LuckyPanel({
               )
             }
           >
-            <Users size={16} /> Tạo từ tất cả bài dự thi hiện tại
+            <Users size={16} /> Tạo segment từ người đã gửi form
           </button>
+          <p className="segment-source-note">
+            Không cần bấm Quét Facebook. Hệ thống lấy họ tên, đại lý và link đã
+            submit; bài chưa có dữ liệu Apify vẫn được đưa vào vòng quay.
+          </p>
         </section>
         <section className="panel lucky-import-panel">
           <div className="panel-heading">
@@ -1596,7 +1610,7 @@ function LuckyPanel({
         <div className="panel-heading">
           <div>
             <h2>Điều khiển công bố giải</h2>
-            <p>Quay theo thứ tự giải 3 → giải 2 → giải 1</p>
+            <p>Quay giải nào cũng được · chọn trước người trúng là tùy chọn</p>
           </div>
           <button
             className="danger-button"
@@ -1614,32 +1628,64 @@ function LuckyPanel({
         </div>
         <div className="prize-buttons">
           {[3, 2, 1].map((rank) => {
-            const winner = winners.find((w: Row) => w.prize_rank === rank);
+            const winner = winners.find((w: Row) => w.prize_rank === rank),
+              preset = presets.find((p: Row) => p.prize_rank === rank);
             return (
-              <button
-                key={rank}
-                className={winner ? "done" : ""}
-                disabled={!current || !!busy}
-                onClick={() =>
-                  action(
-                    "wheel/spin",
-                    { rank },
-                    winner
-                      ? `Đã quay lại giải ${rank}; người cũ sẽ không được chọn lại`
-                      : `Đã bắt đầu quay giải ${rank}`,
-                  )
-                }
-              >
+              <div key={rank} className={`prize-card ${winner ? "done" : ""}`}>
                 <span>GIẢI {rank}</span>
-                <b>
-                  {winner ? `Quay lại giải ${rank}` : `Quay lấy giải ${rank}`}
-                </b>
-                <small>
-                  {winner
-                    ? `Đang giữ: ${winner.name} · ${winner.team}`
-                    : "Màn hình LED sẽ tự chạy hiệu ứng"}
+                <label>
+                  Người trúng dự kiến
+                  <select
+                    value={preset?.entry_id || ""}
+                    disabled={!current || !!busy}
+                    onChange={(event) =>
+                      action(
+                        "wheel/preset",
+                        {
+                          rank,
+                          entryId: event.target.value || null,
+                        },
+                        event.target.value
+                          ? `Đã chỉ định người nhận giải ${rank}`
+                          : `Giải ${rank} sẽ quay ngẫu nhiên`,
+                      )
+                    }
+                  >
+                    <option value="">Ngẫu nhiên</option>
+                    {entries.map((entry: Row) => (
+                      <option key={entry.id} value={entry.id}>
+                        {entry.name} · {entry.team}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <small className="preset-status">
+                  {preset
+                    ? `Đã khóa: ${preset.name} · ${preset.team}`
+                    : "Server sẽ chọn ngẫu nhiên"}
                 </small>
-              </button>
+                <button
+                  disabled={!current || !!busy}
+                  onClick={() =>
+                    action(
+                      "wheel/spin",
+                      { rank },
+                      winner
+                        ? `Đã quay lại giải ${rank}; người cũ sẽ không được chọn lại`
+                        : `Đã bắt đầu quay giải ${rank}`,
+                    )
+                  }
+                >
+                  <b>
+                    {winner ? `Quay lại giải ${rank}` : `Quay lấy giải ${rank}`}
+                  </b>
+                  <small>
+                    {winner
+                      ? `Đang giữ: ${winner.name} · ${winner.team}`
+                      : "Màn hình LED sẽ chạy hiệu ứng"}
+                  </small>
+                </button>
+              </div>
             );
           })}
         </div>

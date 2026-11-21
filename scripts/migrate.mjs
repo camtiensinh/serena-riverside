@@ -86,3 +86,15 @@ await sql.transaction(
     .map((s) => sql.query(s)),
 );
 console.log("Lucky wheel redraw ready.");
+const presetMigration = await readFile(
+  new URL("../src/lib/migrations/008-wheel-presets.sql", import.meta.url),
+  "utf8",
+);
+await sql.transaction(
+  presetMigration
+    .split(";")
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .map((s) => sql.query(s)),
+);
+console.log("Lucky wheel preset winners ready.");
