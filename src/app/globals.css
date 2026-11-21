@@ -2847,7 +2847,41 @@ tbody tr:hover {
 .segment-list {
   display: grid;
   gap: 8px;
-  padding: 20px 22px;
+  max-height: 360px;
+  overflow-y: auto;
+  padding: 10px 17px 14px 22px;
+}
+.segment-search {
+  margin: 14px 22px 0;
+  width: auto;
+}
+.lucky-admin .search-input {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border: 1px solid #d7e4df;
+  border-radius: 9px;
+  background: #fff;
+  color: #71867d;
+}
+.lucky-admin .search-input:focus-within {
+  border-color: #1198c7;
+  box-shadow: 0 0 0 3px #1198c713;
+}
+.lucky-admin .search-input input {
+  width: 100%;
+  min-height: 40px;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  box-shadow: none;
+  background: transparent;
+}
+.lucky-admin .search-input input:focus {
+  border: 0;
+  box-shadow: none;
 }
 .segment-list > button {
   justify-content: space-between;
@@ -2923,6 +2957,18 @@ tbody tr:hover {
   min-width: 0;
   font-size: 11px;
   background: white;
+}
+.preset-search {
+  width: 100%;
+  background: #fff;
+}
+.preset-search input {
+  min-width: 0;
+  background: transparent;
+}
+.preset-search-hint {
+  color: #819199;
+  font-weight: 400;
 }
 .prize-card .preset-status {
   min-height: 30px;

@@ -1459,7 +1459,8 @@ function LuckyPanel({
 }) {
   const [file, setFile] = useState<File | null>(null),
     [name, setName] = useState("Khách tham dự 20.09"),
-    [segmentId, setSegmentId] = useState(data.wheel?.state?.segment_id || ""),
+    [segmentSearch, setSegmentSearch] = useState(""),
+    [presetSearches, setPresetSearches] = useState<Record<number, string>>({}),
     [announceSearch, setAnnounceSearch] = useState(""),
     [announceEntryId, setAnnounceEntryId] = useState("");
   const wheel = data.wheel || {
@@ -1477,6 +1478,14 @@ function LuckyPanel({
   const entries = wheel.entries || [],
     presets = wheel.presets || [],
     announcements = wheel.announcements || [],
+    normalizedSegmentSearch = segmentSearch
+      .trim()
+      .toLocaleLowerCase("vi-VN"),
+    visibleSegments = wheel.segments.filter((segment: Row) =>
+      segment.name
+        .toLocaleLowerCase("vi-VN")
+        .includes(normalizedSegmentSearch),
+    ),
     normalizedSearch = announceSearch.trim().toLocaleLowerCase("vi-VN"),
     visibleEntries = entries
       .filter((entry: Row) =>
@@ -1540,8 +1549,16 @@ function LuckyPanel({
               <p>Tạo trực tiếp từ form đã nhận hoặc chọn tệp đang dùng</p>
             </div>
           </div>
+          <div className="segment-search search-input">
+            <Search size={16} />
+            <input
+              value={segmentSearch}
+              onChange={(event) => setSegmentSearch(event.target.value)}
+              placeholder="Tìm segment…"
+            />
+          </div>
           <div className="segment-list">
-            {wheel.segments.map((s: Row) => (
+            {visibleSegments.map((s: Row) => (
               <button
                 key={s.id}
                 className={wheel.state?.segment_id === s.id ? "active" : ""}
@@ -1562,7 +1579,15 @@ function LuckyPanel({
                 <CheckCircle2 size={18} />
               </button>
             ))}
-            {!wheel.segments.length && <Empty text="Chưa có segment" />}
+            {!visibleSegments.length && (
+              <Empty
+                text={
+                  wheel.segments.length
+                    ? "Không tìm thấy segment"
+                    : "Chưa có segment"
+                }
+              />
+            )}
           </div>
           <button
             className="primary segment-from-submissions"
@@ -1646,12 +1671,44 @@ function LuckyPanel({
         <div className="prize-buttons">
           {[3, 2, 1].map((rank) => {
             const winner = winners.find((w: Row) => w.prize_rank === rank),
-              preset = presets.find((p: Row) => p.prize_rank === rank);
+              preset = presets.find((p: Row) => p.prize_rank === rank),
+              presetSearch = presetSearches[rank] || "",
+              normalizedPresetSearch = presetSearch
+                .trim()
+                .toLocaleLowerCase("vi-VN"),
+              matchingEntries = entries
+                .filter((entry: Row) =>
+                  `${entry.name} ${entry.team}`
+                    .toLocaleLowerCase("vi-VN")
+                    .includes(normalizedPresetSearch),
+                )
+                .slice(0, 100),
+              presetEntries =
+                preset &&
+                !matchingEntries.some((entry: Row) => entry.id === preset.entry_id)
+                  ? [
+                      entries.find((entry: Row) => entry.id === preset.entry_id),
+                      ...matchingEntries,
+                    ].filter(Boolean)
+                  : matchingEntries;
             return (
               <div key={rank} className={`prize-card ${winner ? "done" : ""}`}>
                 <span>GIẢI {rank}</span>
                 <label>
                   Người trúng dự kiến
+                  <div className="preset-search search-input">
+                    <Search size={15} />
+                    <input
+                      value={presetSearch}
+                      onChange={(event) =>
+                        setPresetSearches((currentSearches) => ({
+                          ...currentSearches,
+                          [rank]: event.target.value,
+                        }))
+                      }
+                      placeholder="Tìm tên hoặc đại lý…"
+                    />
+                  </div>
                   <select
                     value={preset?.entry_id || ""}
                     disabled={!current || !!busy}
@@ -1669,12 +1726,17 @@ function LuckyPanel({
                     }
                   >
                     <option value="">Ngẫu nhiên</option>
-                    {entries.map((entry: Row) => (
+                    {presetEntries.map((entry: Row) => (
                       <option key={entry.id} value={entry.id}>
                         {entry.name} · {entry.team}
                       </option>
                     ))}
                   </select>
+                  {entries.length > 100 && !presetSearch && (
+                    <small className="preset-search-hint">
+                      Nhập tên để tìm trong {entries.length} người
+                    </small>
+                  )}
                 </label>
                 <small className="preset-status">
                   {preset
