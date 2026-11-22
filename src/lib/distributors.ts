@@ -5,4 +5,8 @@ export const DISTRIBUTORS = [
   "HỆ THỐNG PHÂN PHỐI PICOLAND",
   "HỆ THỐNG PHÂN PHỐI HUNTERLAND",
   "HỆ THỐNG PHÂN PHỐI VẠN XUÂN SERVICE",
+  "HỆ THỐNG PHÂN PHỐI THIỆN NHÂN GROUP",
+  "HỆ THỐNG PHÂN PHỐI EXIMRS",
+  "HỆ THỐNG PHÂN PHỐI ERA VIETNAM",
+  "HỆ THỐNG PHÂN PHỐI KHÁC",
 ] as const;
